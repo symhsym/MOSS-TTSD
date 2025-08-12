@@ -266,7 +266,7 @@ def normalize_text(text: str) -> str:
     text = re.sub(r'\[(\d+)\]', r'[S\1]', text)
 
     # Remove decorative characters
-    remove_chars = "【】《》（）『』「」""\"-“”～~"
+    remove_chars = "【】《》（）『』「」""\"-_“”～~"
 
 
     # Remove brackets for non-speaker tags (keep content, only remove brackets themselves)

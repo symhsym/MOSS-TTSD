@@ -11,7 +11,6 @@ from transformers.generation.configuration_utils import GenerationConfig
 from transformers.generation.stopping_criteria import StoppingCriteriaList
 from transformers import PreTrainedModel, GenerationMixin, Qwen3Config, Qwen3Model
 from transformers.generation.logits_process import LogitsProcessorList, RepetitionPenaltyLogitsProcessor, TopKLogitsWarper, TopPLogitsWarper, TemperatureLogitsWarper
-from liger_kernel.transformers.model.loss_utils import LigerForCausalLMLoss
 
 
 class AsteroidTTSConfig(Qwen3Config):
@@ -159,7 +158,7 @@ class CustomMixin(GenerationMixin):
                     
             input_ids = torch.cat([input_ids, next_tokens[:, None, :]], dim=1)
             if streamer is not None:
-                streamer.put(next_tokens[:, 0].cpu())
+                streamer.put(next_tokens.cpu())
             
             # Update unfinished_sequences
             needs_additional_steps = torch.where(needs_additional_steps > 0, needs_additional_steps - 1, needs_additional_steps)
@@ -380,6 +379,8 @@ class AsteroidTTSInstruct(AsteroidTTSPretrainedModel, CustomMixin):
         total_loss = None
         
         if labels is not None:
+            from liger_kernel.transformers.model.loss_utils import LigerForCausalLMLoss
+
             device = input_ids.device if input_ids is not None else inputs_embeds.device
             loss_all = torch.empty(self.channels, device=device)
             logits_list = []

@@ -168,6 +168,38 @@ You can run the MOSS-TTSD web UI locally using Gradio. Run the following command
 python gradio_demo.py
 ```
 
+### Streaming Inference
+
+`streamer.py` provides a reference implementation for streaming audio generation. Unlike batch inference that generates the entire audio sequence at once, this streaming approach processes and outputs audio chunks progressively as tokens are generated, significantly reducing time-to-first-audio. The `AudioIteratorStreamer` class demonstrates how to implement chunked decoding of speech tokens, with each chunk representing approximately 20 seconds of audio.
+
+```bash
+python streamer.py \
+  --jsonl examples/examples.jsonl \
+  --output_dir outputs/streamer \
+  --dtype bf16 \
+  --attn_implementation flash_attention_2 \
+  --use_tqdm
+```
+
+Parameters:
+
+- `--jsonl`: Path to the input JSONL file containing dialogue scripts and optional speaker reference audios (default: `examples/examples.jsonl`)
+- `--seed`: Random seed for reproducibility (optional)
+- `--output_dir`: Directory where streaming chunks and the final audio will be saved (default: `outputs/streamer`)
+- `--use_normalize`: Whether to normalize input text (default: `True`)
+- `--dtype`: Model data type, one of `bf16` (default), `fp16`, `fp32`
+- `--attn_implementation`: Attention implementation, one of `flash_attention_2` (default), `sdpa`, `eager`
+- `--use_tqdm`: Show a token-level progress bar
+
+Outputs:
+
+- Streaming chunks: `chunk_0.flac`, `chunk_1.flac`, ... saved under `--output_dir`
+- Concatenated full audio: `full_audio.flac` saved under `--output_dir`
+
+Notes:
+
+- Streaming currently supports batch size = 1 only
+
 ### API Usage
 
 #### Batch Processing Tool

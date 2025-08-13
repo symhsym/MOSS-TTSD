@@ -17,19 +17,21 @@
 
 # MOSS-TTSD 🪐
 
+[English](README.md) | [简体中文](README_zh.md)
+
 ## Overview
 
 MOSS-TTSD (text to spoken dialogue) is an open-source bilingual spoken dialogue synthesis model that supports both Chinese and English.
 It can transform dialogue scripts between two speakers into natural, expressive conversational speech.
-MOSS-TTSD supports voice cloning and long single-session speech generation, making it ideal for AI podcast production.
+MOSS-TTSD supports voice cloning and long single-session speech generation, making it ideal for AI podcast production, interviews, and chats.
  For detailed information about the model and demos, please refer to our [Blog-en](https://www.open-moss.com/en/moss-ttsd/) and [中文博客](https://www.open-moss.com/cn/moss-ttsd/). You can also find the model on [Hugging Face](https://huggingface.co/fnlp/MOSS-TTSD-v0.5) and try it out in the [Spaces demo](https://huggingface.co/spaces/fnlp/MOSS-TTSD).
 
 ## Highlights
 
 - **Highly Expressive Dialogue Speech**: Built on unified semantic-acoustic neural audio codec, a pre-trained large language model, millions of hours of TTS data, and 400k hours synthetic and real conversational speech, MOSS-TTSD generates highly expressive, human-like dialogue speech with natural conversational prosody.
-- **Two-Speaker Voice Cloning**: MOSS-TTSD supports zero-shot two speakers voice cloning and can generate conversational speech with accurate speaker swithcing based on dialogue scripts.
+- **Two-Speaker Voice Cloning**: MOSS-TTSD supports zero-shot two speakers voice cloning and can generate conversational speech with accurate speaker swithcing based on dialogue scripts. Only 10 to 20 seconds of reference audio is needed.
 - **Chinese-English Bilingual Support**: MOSS-TTSD enables highly expressive speech generation in both Chinese and English.
-- **Long-Form Speech Generation**: Thanks to low-bitrate codec and training framework optimization, MOSS-TTSD has been trained for long speech generation.
+- **Long-Form Speech Generation**: Thanks to low-bitrate codec and training framework optimization, MOSS-TTSD has been trained for long speech generation (Training maximum length is 960s).
 - **Fully Open Source & Commercial-Ready**: MOSS-TTSD and its future updates will be fully open-source and support free commercial use.
 
 ## News 🚀
@@ -39,7 +41,7 @@ MOSS-TTSD supports voice cloning and long single-session speech generation, maki
 
 ## Installation
 
-To run MOSS-TTSD, you need to install the required dependencies. You can use either pip or conda to set up your environment.
+To run MOSS-TTSD, you need to install the required dependencies. You can use pip and conda to set up your environment.
 
 ### Using conda
 
@@ -49,9 +51,7 @@ pip install -r requirements.txt
 pip install flash-attn
 ```
 
-### Download XY Tokenizer
-
-<!-- https://huggingface.co/fnlp/XY_Tokenizer_TTSD_V0/resolve/main/xy_tokenizer.ckpt 下载到 Asteroid-gradio/XY_Tokenizer/weights -->
+### Download XY-Tokenizer
 
 You also need to download the XY Tokenizer model weights. You can find the weights in the [XY_Tokenizer repository](https://huggingface.co/fnlp/XY_Tokenizer_TTSD_V0).
 
@@ -67,7 +67,7 @@ huggingface-cli download fnlp/XY_Tokenizer_TTSD_V0 xy_tokenizer.ckpt --local-dir
 To run MOSS-TTSD locally, you can use the provided inference script. Make sure you have the model checkpoint and configuration files ready.
 
 ```bash
-python inference.py --jsonl examples/examples.jsonl --output_dir outputs --seed 42 --use_normalize
+python inference.py --jsonl examples/examples.jsonl --output_dir outputs --seed 42 --use_normalize --silence_duration 0
 ```
 
 Parameters:
@@ -75,15 +75,18 @@ Parameters:
 - `--jsonl`: Path to the input JSONL file containing dialogue scripts and speaker prompts.
 - `--output_dir`: Directory where the generated audio files will be saved.
 - `--seed`: Random seed for reproducibility.
-- `--use_normalize`: Whether to normalize the text input (default is `False`, but **recommended to enable** for better text processing).
+- `--use_normalize`: Whether to normalize the text input (**recommended to enable**).
 - `--dtype`: Model data type (default is `bf16`).
 - `--attn_implementation`: Attention implementation (default is `flash_attention_2`, `sdpa` and `eager` are also supported).
+- `--silence_duration`: Silence duration between the reference audio and the generated audio (default: 0 seconds). If noise appears at the beginning of the generated audio (often because it continues the tail end of the prompt), try setting this parameter to 0.1.
+
+**Windows users need to set the attn_implementation parameter to sdpa or eager**
 
 #### JSONL Input Format
 
 The input JSONL file should contain one JSON object per line. MOSS-TTSD supports multiple input formats:
 
-**Format 1: Text-only input (No voice cloning)**
+**Format 1: Text-only input (No voice cloning, using the model's random timbre)**
 ```json
 {
   "text": "[S1]Speaker 1 dialogue content[S2]Speaker 2 dialogue content[S1]..."
@@ -180,6 +183,8 @@ python streamer.py \
   --attn_implementation flash_attention_2 \
   --use_tqdm
 ```
+
+**Windows users need to set the attn_implementation parameter to sdpa or eager**
 
 Parameters:
 
@@ -334,7 +339,7 @@ Following the data organization format described in the previous section [Usage/
 Once you have prepared the JSONL file, you can manually preprocess the data using the `data_preprocess.py` tool. For example:
 
 ```bash
-python finetune/data_preprocess.py --jsonl <path_to_jsonl> --model_path <path_to_model> --output_dir <output_directory> --data_name <data_name> [--use_normalize]
+python finetune/data_preprocess.py --jsonl <path_to_jsonl> --model_path <path_to_model> --output_dir <output_directory> --data_name <data_name> --use_normalize
 ```
 
 #### Parameters
@@ -475,13 +480,12 @@ lora_config_file : /path/to/lora_config.yaml
 #### Usage
 
 ```bash
-python finetune/finetune_workflow.py --config path/to/your/config.yaml [--pass_data_preprocess]
+python finetune/finetune_workflow.py --config path/to/your/config.yaml
 ```
 
 #### Parameters
 
 - `-c`, `--config`: Path to the workflow configuration YAML file (default: `./finetune/finetune_config.yaml`)
-- `-pd`, `--pass_data_preprocess`: Skip data preprocess step and proceed directly to fine-tuning
 
 ## Demos
 

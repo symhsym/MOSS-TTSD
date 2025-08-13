@@ -28,6 +28,8 @@ def main():
                        help="Model data type (default: bf16)")
     parser.add_argument("--attn_implementation", choices=["flash_attention_2", "sdpa", "eager"], default="flash_attention_2",
                        help="Attention implementation (default: flash_attention_2)")
+    parser.add_argument("--silence_duration", type=float, default=0,
+                       help="Silence duration between speech prompt and generated speech, which can be used to avoid noise problem at the beginning of generated audio")
     
     args = parser.parse_args()
     
@@ -81,7 +83,8 @@ def main():
         device=device,
         system_prompt=SYSTEM_PROMPT,
         start_idx=0,
-        use_normalize=args.use_normalize
+        use_normalize=args.use_normalize,
+        silence_duration=args.silence_duration
     )
     
     # Save summary if requested

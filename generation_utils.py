@@ -10,7 +10,6 @@ from modeling_asteroid import AsteroidTTSInstruct
 from XY_Tokenizer.xy_tokenizer.model import XY_Tokenizer
 
 MAX_CHANNELS = 8
-SILENCE_DURATION = 0.0  # Fixed silence duration: 0 seconds
 
 def load_model(model_path, spt_config_path, spt_checkpoint_path, torch_dtype=torch.bfloat16, attn_implementation="flash_attention_2"):
     tokenizer = AutoTokenizer.from_pretrained(model_path)
@@ -177,7 +176,7 @@ def merge_speaker_audios(wav1, sr1, wav2, sr2, target_sample_rate=16000):
         raise
 
 
-def process_inputs(tokenizer, spt, prompt, text, device, audio_data=None, max_channels=8, pad_token=1024):
+def process_inputs(tokenizer, spt, prompt, text, device, silence_duration, audio_data=None, max_channels=8, pad_token=1024):
     seq = f"<|begin_of_style|>{prompt}<|end_of_style|>\n<|begin_of_text|>{text}<|end_of_text|>\n<|begin_of_speech|>"
     inputs1 = np.array(tokenizer.encode(seq))
     input_ids = np.full((inputs1.shape[0], max_channels), pad_token)
@@ -189,7 +188,7 @@ def process_inputs(tokenizer, spt, prompt, text, device, audio_data=None, max_ch
             wav = audio_data
             
             # Add fixed 5-second silence at the end of audio (using 16k sample rate)
-            silence_samples = int(SILENCE_DURATION * 16000)
+            silence_samples = int(silence_duration * 16000)
             silence = torch.zeros(wav.shape[0], silence_samples)
             wav = torch.cat([wav, silence], dim=1)
             
@@ -338,7 +337,7 @@ def normalize_text(text: str) -> str:
     return "".join(merged_lines).replace('‘', "'").replace('’', "'")
 
 
-def process_batch(batch_items, tokenizer, model, spt, device, system_prompt, start_idx, use_normalize=False):
+def process_batch(batch_items, tokenizer, model, spt, device, system_prompt, start_idx, use_normalize=False, silence_duration=0):
     """Process a batch of data items and generate audio, return audio data and metadata"""
     try:
         # Prepare batch data
@@ -387,7 +386,7 @@ def process_batch(batch_items, tokenizer, model, spt, device, system_prompt, sta
         for i, (text, prompt, audio_path) in enumerate(zip(texts, prompts, prompt_audios)):
             # Load audio data here
             audio_data = load_audio_data(audio_path) if audio_path else None
-            inputs = process_inputs(tokenizer, spt, prompt, text, device, audio_data)
+            inputs = process_inputs(tokenizer, spt, prompt, text, device, silence_duration, audio_data)
             inputs = shifting_inputs(inputs, tokenizer)
             input_ids_list.append(inputs)
         

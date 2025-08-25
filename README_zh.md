@@ -55,11 +55,11 @@ pip install flash-attn
 
 ### 下载 XY-Tokenizer 权重
 
-首先需要下载 XY-Tokenizer 的Codec模型权重，见 [XY_Tokenizer仓库](https://huggingface.co/fnlp/XY_Tokenizer_TTSD_V0)。
+首先需要下载 XY-Tokenizer 的Codec模型权重，见 [XY_Tokenizer仓库](https://huggingface.co/fnlp/XY_Tokenizer_TTSD_V0_32k)。
 
 ```bash
 mkdir -p XY_Tokenizer/weights
-huggingface-cli download fnlp/XY_Tokenizer_TTSD_V0 xy_tokenizer.ckpt --local-dir ./XY_Tokenizer/weights/
+huggingface-cli download fnlp/XY_Tokenizer_TTSD_V0_32k xy_tokenizer.ckpt --local-dir ./XY_Tokenizer/weights/
 ```
 
 ## 使用方法

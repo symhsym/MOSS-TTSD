@@ -18,7 +18,7 @@ class XY_Tokenizer(nn.Module):
         self.output_sample_rate = generator_params['output_sample_rate']
         
         self.encoder_downsample_rate = 1280
-        self.decoder_upsample_rate = 1920
+        self.decoder_upsample_rate = int(self.output_sample_rate / 12.5)
         self.code_dim = generator_params['quantizer_kwargs']['input_dim']
         
         ## Codec part

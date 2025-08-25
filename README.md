@@ -36,6 +36,7 @@ MOSS-TTSD supports voice cloning and long single-session speech generation, maki
 
 ## News 🚀
 
+- **[2025-08-25]** We released the 32khz version of XY-Tokenizer.
 - **[2025-08-12]** We add support for streaming inference in MOSS-TTSD v0.5.
 - **[2025-07-29]** We provide the SiliconFlow API interface and usage examples for MOSS-TTSD v0.5.
 - **[2025-07-16]** We open-source the fine-tuning code for MOSS-TTSD v0.5, supporting full-parameter fine-tuning, LoRA fine-tuning, and multi-node training.

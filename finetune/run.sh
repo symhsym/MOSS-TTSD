@@ -8,6 +8,6 @@ nohup accelerate launch \
   --train_data_dir  \
   --eval_data_dir  \
   --output_dir  --lora \
-  > /data2/yumingshi/语音大模型/MOSS_TTSD/fnlp/DX+OPEN_LORA1.log 2>&1 &
+  > output.log 2>&1 &
 
 

@@ -514,8 +514,7 @@ def train(model_path : str, train_data_dir : str, eval_data_dir : str, output_di
         processing_class=tokenizer
     )
 
-    trainer.train(resume_from_checkpoint='fnlp/DX+OPEN_LORA1/checkpoint-13000')
-    # trainer.train()
+    trainer.train()
     torch.cuda.synchronize()
     
     # Save model

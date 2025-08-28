@@ -1,0 +1,36 @@
+per_device_train_batch_size: 4
+gradient_accumulation_steps: 1
+num_train_epochs: 50
+learning_rate: 1e-4
+bf16: true
+eval_strategy: "steps"
+eval_steps: 1000
+eval_delay: 0
+per_device_eval_batch_size: 4
+eval_accumulation_steps: 1
+bf16_full_eval: true
+logging_steps: 200
+save_strategy: "steps"
+save_steps: 1000
+save_total_limit: 3
+load_best_model_at_end: true
+metric_for_best_model: "eval_loss"
+greater_is_better: false
+dataloader_num_workers: 32
+warmup_ratio: 0.1
+lr_scheduler_type: "cosine"
+gradient_checkpointing: false
+
+optim: "adamw_torch_fused"
+adam_beta1: 0.9
+adam_beta2: 0.999
+adam_epsilon: 1e-8
+weight_decay: 0.0
+max_grad_norm: 1.0
+tf32: true
+dataloader_persistent_workers: true
+dataloader_prefetch_factor: 3
+dataloader_pin_memory: true
+
+max_input_tokens: 4096
+max_output_tokens: 15000

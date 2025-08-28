@@ -1,15 +1,34 @@
-## About This Fork
+# MOSS — Fine-Tuning Optimized (Fork)
 
-This repository is an **application-driven** fork of the original MOSS project, aimed at accelerating **mid- to large-scale** fine-tuning workloads while preserving the training logic. The main enhancements include:
+> A fine-tuning–focused fork of MOSS; changes are limited to the fine-tuning pipeline.
 
-- **Sequence packing** for fine-tuning datasets to reduce padding and improve GPU utilization.
-- **Streaming data loading plus a packing dataset class**, enabling low-memory, continuous ingestion of training data.
-- **Parallel data preprocessing** across multi-core CPUs and multi-GPU pipelines to alleviate I/O and CPU bottlenecks.
+## What’s Different in This Fork
 
+This fork aims to improve end-to-end throughput and time-to-results during fine-tuning in practical settings. It does not modify core model logic or inference behavior. Key changes include:
 
-**Goal:** optimization of the training code to support **large data volumes** and **multi-GPU, large-server** environments, reducing overall training time.
+- Support for **sequence packing** in fine-tuning datasets to reduce padding and help GPU utilization.
+- **Streaming data loading** with packing, designed for cases where the full dataset cannot be loaded into memory at once, enabling continuous, low-footprint ingestion.
+- **Parallel data preprocessing** across multi-core CPUs and multi-GPU environments (when available).
+- **Training configuration updates** — please see `training config new` for the new defaults and overrides.
 
-### Training commend example
+> Goal: help shorten wall-clock fine-tuning time on **mid- to large-scale** datasets and **multi-GPU, large-server** setups. Actual gains may vary by hardware, data characteristics, and hyperparameters.
+
+### Parallel Data Processing
+
+```bash
+nohup OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 \
+    python -u parallel_preprocess.py \
+      --jsonl /path/data.jsonl \
+      --model_path /path/MOSS-TTSD-v0.5 \
+      --output_dir /path/out \
+      --data_name processed_data \
+      --gpus 8 \
+      --io_workers_per_gpu 12 \
+      --merge_single_file \
+> preprocess_$(date +%F_%H-%M).log 2>&1 & echo $! > preprocess.pid
+```
+
+### Training 
 
 ```bash
 nohup accelerate launch \

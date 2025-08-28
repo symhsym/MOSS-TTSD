@@ -1,6 +1,6 @@
-# MOSS — Fine-Tuning Optimized (Fork)
+# MOSS-TTSD (Fine-Tuning Optimized)
 
-> A fine-tuning–focused fork of MOSS; changes are limited to the fine-tuning pipeline.
+> A fine-tuning–focused fork of MOSS; changes are limited to the fine-tuning part.
 
 ## What’s Different in This Fork
 

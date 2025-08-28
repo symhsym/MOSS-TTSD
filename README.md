@@ -4,9 +4,9 @@
 
 ## What’s Different in This Fork
 
-This fork aims to improve end-to-end throughput and time-to-results during fine-tuning in practical settings. It does not modify core model logic or inference behavior. Key changes include:
+This fork aims to improve overall time efficiency and throughput during finetuning in practical settings. It does not modify core logic. Key changes include:
 
-- Support for **sequence packing** in fine-tuning datasets to reduce padding and help GPU utilization.
+- Support for **sequence packing** in finetuning datasets to reduce padding and improve GPU utilization.
 - **Streaming data loading** with packing, designed for cases where the full dataset cannot be loaded into memory at once, enabling continuous, low-footprint ingestion.
 - **Parallel data preprocessing** across multi-core CPUs and multi-GPU environments (when available).
 - **Training configuration updates** — please see `training config new` for the new defaults and overrides.

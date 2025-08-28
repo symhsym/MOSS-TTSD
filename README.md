@@ -1,3 +1,34 @@
+## About This Fork
+
+This repository is an **application-driven** fork of the original MOSS project, aimed at accelerating **mid- to large-scale** fine-tuning workloads while preserving the training logic. The main enhancements include:
+
+- **Sequence packing** for fine-tuning datasets to reduce padding and improve GPU utilization.
+- **Streaming data loading plus a packing dataset class**, enabling low-memory, continuous ingestion of training data.
+- **Parallel data preprocessing** across multi-core CPUs and multi-GPU pipelines to alleviate I/O and CPU bottlenecks.
+
+
+**Goal:** optimization of the training code to support **large data volumes** and **multi-GPU, large-server** environments, reducing overall training time.
+
+### Training commend example
+
+```bash
+nohup accelerate launch \
+  --num_processes=8 \
+  --main_process_port=29502 \
+  --config_file finetune/accelerate_config/zero1.yaml \
+  MOSS_TTSD/finetune/finetune_packing.py \
+  --model_path MOSS_TTSD/fnlp/MOSS-TTSD-v0.5 \
+  --train_data_dir  \
+  --eval_data_dir  \
+  --output_dir  --lora \
+  --training_config finetune/training_config_new.yaml 
+  > output.log 2>&1 &
+
+```
+
+
+
+
 <div align="center">
     <h1>
     MOSS: Text to Spoken Dialogue Generation

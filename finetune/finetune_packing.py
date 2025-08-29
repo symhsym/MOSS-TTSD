@@ -175,7 +175,10 @@ class StreamingPackedDataset(IterableDataset):
             self.pointers = np.array(ptrs, dtype=np.int64)
 
         self.total_samples = len(self.pointers)
-        self.avg_samples_per_pack = 26
+        
+        # NOTE: The value of avg_samples_per_pack should be determined based on actual data statistics and the desired packing size.
+        # You can and should adjust this value according to your dataset and packing requirements.
+        self.avg_samples_per_pack = 26  # This is a placeholder; tune as needed for your use case.
 
     def _shift_example(self, input_ids: np.ndarray, labels: np.ndarray):
         """Consistent with the original implementation: multi-channel delay shifting."""
